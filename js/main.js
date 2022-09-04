@@ -1,7 +1,7 @@
 const getEle = (id) => document.getElementById(id);
 
-import { Task } from './models/task.js';
-import { TaskList } from './models/taskList.js';
+import Task from './models/task.js';
+import TaskList from './models/taskList.js';
 
 const taskList = new TaskList();
 
@@ -25,14 +25,12 @@ const render = (taskList, divId) => {
 
 const renderTask = (taskList) => {
   const todoTasks = taskList.arr.filter((task) => task.status === 'todo');
-  const completedTask = taskList.arr.filter(
-    (task) => task.status === 'completed'
-  );
+  const completedTask = taskList.arr.filter((task) => task.status === 'completed');
   render(todoTasks, 'todo');
   render(completedTask, 'completed');
 };
 
-const addTaskHandler = () => {
+getEle('addItem').onclick = () => {
   const taskName = getEle('newTask').value;
   const newTask = new Task(taskName, 'todo');
   taskList.addTask(newTask);
@@ -45,15 +43,13 @@ window.removeTaskHandler = (id) => {
 };
 
 window.finishTaskHandler = (id) => {
-  let selectedTask = taskList.arr.find((task) => task.id === id);
+  const selectedTask = taskList.arr.find((task) => task.id === id);
   selectedTask.status = 'completed';
   renderTask(taskList);
 };
 
 window.sortTaskHandler = (sortOrder) => {
-  let sortedList = new TaskList();
+  const sortedList = new TaskList();
   sortedList.arr = taskList.sortTask(sortOrder);
   renderTask(sortedList);
 };
-
-getEle('addItem').onclick = () => addTaskHandler();

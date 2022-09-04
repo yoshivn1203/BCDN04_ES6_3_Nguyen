@@ -1,8 +1,12 @@
-export class TaskList {
+class TaskList {
   arr = [];
 
   addTask(task) {
-    task.id = Math.floor(Math.random() * 1e5 + 1).toString();
+    // tạo chuỗi ký tự ngẫu nhiên dựa vào số random và thời gian để làm id
+    task.id = String(Date.now().toString(32) + Math.random().toString(16)).replace(
+      /\./g,
+      ''
+    );
     this.arr.push(task);
   }
 
@@ -21,3 +25,5 @@ export class TaskList {
     return sortResult;
   }
 }
+
+export default TaskList;
