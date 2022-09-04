@@ -3,18 +3,18 @@ const getEle = (id) => document.getElementById(id);
 import { Task } from './models/task.js';
 import { TaskList } from './models/taskList.js';
 
-let taskList = new TaskList();
+const taskList = new TaskList();
 
-const render = (list, divId) => {
+const render = (taskList, divId) => {
   let content = '';
-  list.map((task) => {
+  taskList.map((task) => {
     content += `
     <li >
       <p class="task">${task.name}</p>
       <div class="buttons">
-        <button class="remove far fa-trash-alt" onclick="removeTask('${task.id}')"></button>
-          <button class="complete far fa-check-circle" onclick="finishTask('${task.id}')"></button>
-          <button class="complete fas fa-check-circle"></button>
+        <button class="remove far fa-trash-alt" onclick="removeTaskHandler('${task.id}')"></button>
+        <button class="complete far fa-check-circle" onclick="finishTaskHandler('${task.id}')"></button>
+        <button class="complete fas fa-check-circle"></button>
       </div>
     </li>
   `;
@@ -23,36 +23,37 @@ const render = (list, divId) => {
   getEle(divId).innerHTML = content;
 };
 
-let renderHandler = (list) => {
-  let todoTasks = list.arr.filter((ele) => !ele.isDone);
-  let completedTask = list.arr.filter((ele) => ele.isDone);
+const renderTask = (taskList) => {
+  const todoTasks = taskList.arr.filter((task) => task.status === 'todo');
+  const completedTask = taskList.arr.filter(
+    (task) => task.status === 'completed'
+  );
   render(todoTasks, 'todo');
   render(completedTask, 'completed');
 };
 
-let addTask = () => {
-  let taskName = getEle('newTask').value;
-  let task = new Task(taskName, false);
-  taskList.pushTask(task);
-  renderHandler(taskList);
+const addTaskHandler = () => {
+  const taskName = getEle('newTask').value;
+  const newTask = new Task(taskName, 'todo');
+  taskList.addTask(newTask);
+  renderTask(taskList);
 };
 
-window.removeTask = (id) => {
-  taskList.popTask(id);
-  console.log(taskList);
-  renderHandler(taskList);
+window.removeTaskHandler = (id) => {
+  taskList.removeTask(id);
+  renderTask(taskList);
 };
 
-window.finishTask = (id) => {
-  let selectedTask = taskList.getTaskById(id);
-  selectedTask.isDone = true;
-  renderHandler(taskList);
+window.finishTaskHandler = (id) => {
+  let selectedTask = taskList.arr.find((task) => task.id === id);
+  selectedTask.status = 'completed';
+  renderTask(taskList);
 };
 
 window.sortTaskHandler = (sortOrder) => {
   let sortedList = new TaskList();
   sortedList.arr = taskList.sortTask(sortOrder);
-  renderHandler(sortedList);
+  renderTask(sortedList);
 };
 
-getEle('addItem').onclick = () => addTask();
+getEle('addItem').onclick = () => addTaskHandler();
